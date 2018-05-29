@@ -4,13 +4,20 @@ CREATE DATABASE bamazon_db;
 USE bamazon_db;
 
 CREATE TABLE products(
-  item_id INT(11) NOT NULL AUTO_INCREMENT,
-  product_name VARCHAR(100) NOT NULL,
-  department_name VARCHAR(45) NOT NULL,
-  price INT(11) default 0,
-  quantity INT(11) default 0,
-  PRIMARY KEY (id)
+  item_id INT NOT NULL AUTO_INCREMENT,
+  product_name VARCHAR(100) NULL,
+  department_name VARCHAR(45) NULL,
+  price DECIMAL(10,2) NULL,
+  quantity INT(11) NULL,
+  PRIMARY KEY (item_id)
 );
+
+
+
+
+-- INSERT INTO products (product_name, department_name, price, quantity)
+-- VALUES ("hoodies", "clothing", 30, 25), ("t-shirts", "clothing", 35, 20), ("stickers", "accessories", 50, 3);
+
 
 INSERT INTO products (product_name, department_name, price, quantity)
 VALUES 
@@ -25,5 +32,4 @@ VALUES
 ("mugs", "kitchen", 20, 10),
 ("baseball caps", "clothing", 20, 15);
 
-
-
+SELECT * FROM bamazon_db.products LIMIT 1000;
