@@ -12,13 +12,6 @@ CREATE TABLE products(
   PRIMARY KEY (item_id)
 );
 
-
-
-
--- INSERT INTO products (product_name, department_name, price, quantity)
--- VALUES ("hoodies", "clothing", 30, 25), ("t-shirts", "clothing", 35, 20), ("stickers", "accessories", 50, 3);
-
-
 INSERT INTO products (product_name, department_name, price, quantity)
 VALUES 
 ("hoodies", "clothing", 30, 25), 

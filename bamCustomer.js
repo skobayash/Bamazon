@@ -15,8 +15,8 @@ var connection = mysql.createConnection({
   // connect to the mysql server and sql database
 connection.connect(function(err) {
     if (err) throw err;
+    displayItems()
     userPrompt();
-    // displayItems()
 });
 
 
@@ -115,29 +115,3 @@ function displayItems() {
 };
 
 
-/*
-if (chosenItem.quantity >= parseInt(answer.numUnits)) {
-    connection.query(
-        "UPDATE bamazon_db.products SET ? WHERE ?",
-            [
-            {
-                quantity: newQuantity
-            },
-            {
-                item_id: chosenItem.item_id
-            }
-            ],
-            // console.log("Your purchase was successful.")
-            // function(error) {
-            //     if (error) throw err;
-            //     console.log("Your purchase was successful.")
-            //     //   start();
-            // }
-        );
-}
-else {
-  // bid wasn't high enough, so apologize and start over
-  console.log("We do not have enough of this item in stock. Please try again.");
-//   start();
-}
-*/
