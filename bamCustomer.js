@@ -42,7 +42,7 @@ function userPrompt() {
             {
                 name: "numUnits",
                 type: "input",
-                message: "How many *products* would you like to buy?",
+                message: "How many would you like to buy?",
                 validate: function(value) {
                     if (isNaN(value) === false) {
                         return true;
@@ -59,12 +59,8 @@ function userPrompt() {
                 chosenItem = results[i];
               }
             }
-            
-            console.log(chosenItem.quantity)
-            console.log(answer.numUnits)
-  
-            console.log(chosenItem.item_id)
             var newQuantity = chosenItem.quantity - answer.numUnits
+            var totalSale = (parseInt(answer.numUnits) * chosenItem.price)
 
             // determine if there is enough of the item in stock
             if (chosenItem.quantity >= parseInt(answer.numUnits)) {
@@ -72,15 +68,34 @@ function userPrompt() {
                 connection.query(
                     "UPDATE bamazon_db.products SET ? WHERE ?",
                     [
-                        { quantity: newQuantity },
-                        { item_id: chosenItem.item_id }
+                      {
+                        quantity: newQuantity
+                      },
+                      {
+                        item_id: chosenItem.item_id
+                      }
                     ],
                     function(error) {
                         if (error) throw err;
-                        console.log("Your purchase was successful.");
-                        console.log("Your total purchase is $" + (parseInt(answer.numUnits) * chosenItem.price));
-                    }
+                        console.log("You purchased " + answer.numUnits + " " + chosenItem.product_name + ".")
+                        console.log("Your total purchase is $" + totalSale + ".");
+                    },
                 );
+                connection.query(
+                    "UPDATE bamazon_db.products SET ? WHERE ?",
+                    [
+                      {
+                        product_sales: chosenItem.product_sales + totalSale
+                      },
+                      {
+                        item_id: chosenItem.item_id
+                      }
+                    ],
+                    function(error) {
+                        if (error) throw err;
+                    },
+                );
+                connection.end();
             }
             else {
                 console.log("We do not have enough of this item in stock at this time. Please try again soon.");
@@ -110,7 +125,7 @@ function displayItems() {
         }
 
         console.log(table.toString());
-        connection.end();
+        // connection.end();
     });
 };
 

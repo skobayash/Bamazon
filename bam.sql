@@ -9,20 +9,46 @@ CREATE TABLE products(
   department_name VARCHAR(45) NULL,
   price DECIMAL(10,2) NULL,
   quantity INT(11) NULL,
+  product_sales INT(11) default 0,
   PRIMARY KEY (item_id)
 );
 
-INSERT INTO products (product_name, department_name, price, quantity)
+INSERT INTO products (product_name, department_name, quantity, price)
 VALUES 
 ("hoodies", "clothing", 30, 25), 
 ("t-shirts", "clothing", 35, 20), 
-("stickers", "accessories", 50, 3), 
+("stickers", "accessories", 3, 3), 
 ("water bottles", "kitchen", 40, 12),
-("beanies", "clothing", 30, 15),
+("beanies", "clothing", 1, 15),
 ("bumper stickers", "accessories", 25, 7),
-("travel mugs", "kitchen", 25, 12),
+("travel mugs", "kitchen", 25, 1),
 ("backpacks", "clothing", 30, 45),
 ("mugs", "kitchen", 20, 10),
 ("baseball caps", "clothing", 20, 15);
 
+
+CREATE TABLE departments(
+  dep_id INT NOT NULL AUTO_INCREMENT,
+  dep_name VARCHAR(100) NULL,
+  overhead_costs DECIMAL(10,2) NULL,
+  PRIMARY KEY (dep_id)
+);
+
+
+INSERT INTO departments (dep_name, overhead_costs)
+VALUES 
+("clothing", 50), 
+("accessories", 25),
+("kitchen", 50);
+
+
 SELECT * FROM bamazon_db.products LIMIT 1000;
+
+
+SELECT DISTINCT (departments.dep_name), departments.dep_id, departments.overhead_costs
+FROM departments INNER JOIN products ON departments.dep_name = products.department_name;
+   
+
+
+//, products.product_sales
+//departments.overhead_costs
