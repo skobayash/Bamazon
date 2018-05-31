@@ -51,22 +51,20 @@ function viewSales() {
         head: ['Department ID', 'Department Name', 'Overhead Costs', 'Product Sales']
     });
 
-   // SELECT department_name, SUM(product_sales * products.price) FROM products GROUP BY department_name ORDER BY item_id ASC;
 
-    var query = "SELECT departments.dep_id, departments.dep_name, departments.overhead_costs, products.product_sales ";
-    query += "FROM departments INNER JOIN products ON departments.dep_name = products.department_name ";
-   
-    // var query =  " SELECT departments.dep_id, departments.dep_name, departments.overhead_costs," 
-    // query += " SUM(products.product_sales) AS total_sales, (SUM(products.product_sales) - departments.overhead_costs) "
-    // query += "AS total_profit FROM departments INNER JOIN products ON departments.dep_name=products.department_name "
-    // query += "GROUP BY dep_id ORDER BY dep_id ASC";
-
+    var query = "SELECT departments.dep_id, departments.dep_name, departments.overhead_costs, "
+    query += "SUM(products.product_sales) AS product_sales, (-departments.overhead_costs + "
+    query += "SUM(products.product_sales)) AS total_profit FROM departments LEFT JOIN products "
+    query += "ON departments.dep_name = products.department_name GROUP BY departments.dep_id ASC;"
+ 
     connection.query(query, function(err, results) {
         if (err) throw err;
         // push information into CLI table and log table to terminal 
+
+        // console.log(results);
         for (var i = 0; i < results.length; i++) {
             table.push(
-                [results[i].dep_id, results[i].dep_name, results[i].overhead_costs, results[i].product_sales]
+                [results[i].dep_id, results[i].dep_name, results[i].overhead_costs, results[i].product_sales, results[i].total_profit]
             );
         }
         console.log(table.toString());

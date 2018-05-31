@@ -23,10 +23,10 @@ Install the following dependencies for Bamazon:
 Run the customer view by entering the following into your terminal/bash window:
 ``` node bamCustomer.js ```
 A table containing the store's items and prices will automatically be logged to your
-terminal.
-
-You will then be prompted with two questions regarding the item and quantity
+terminal and you will be prompted with two options:
+1. If you select "Purchase item(s)" you will then be prompted with two questions regarding the item and quantity
 of the item you would like to purchase.
+2. You may also select "Exit" to exit the customer app.
 
 <img src="/assets/images/customer.gif" />
 

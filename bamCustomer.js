@@ -15,13 +15,34 @@ var connection = mysql.createConnection({
 // Connect to MySQL server & SQL database
 connection.connect(function(err) {
     if (err) throw err;
-    displayItems()
-    userPrompt();
+    displayItems();
 });
 
 
+function start() {
+    // Main menu prompt list
+    inquirer.prompt({
+        name: "action",
+        type: "rawlist",
+        message: "What would you like to do?",
+        choices: ["Purchase item(s)", "Exit"]
+    })
+    .then(function(answer) {
+
+        switch (answer.action) {
+            case "Purchase item(s)":
+                purchaseItem();
+                break;
+            case "Exit":
+                exitCustomer();
+                break;
+        }
+
+    });
+}
+
 /* Prompt User About Purchase (Function)*/
-function userPrompt() {
+function purchaseItem() {
     // Main menu list prompt
     connection.query("SELECT * FROM bamazon_db.products", function(err, results) {
         if (err) throw err;
@@ -79,8 +100,8 @@ function userPrompt() {
                     ],
                     function(error) {
                         if (error) throw err;
-                        console.log("You purchased " + answer.numUnits + " " + chosenItem.product_name + ".")
-                        console.log("Your total purchase is $" + totalSale + ".");
+                        console.log("\n\nYou purchased " + answer.numUnits + " " + chosenItem.product_name + ".")
+                        console.log("Your total purchase is $" + totalSale + ".\n");
                     },
                 );
                 // Update total sales amount
@@ -96,12 +117,14 @@ function userPrompt() {
                     ],
                     function(error) {
                         if (error) throw err;
+                        start();
                     },
                 );
-                connection.end();
+                // start();
             }
             else {
-                console.log("We do not have enough of this item in stock at this time. Please try again soon.");
+                console.log("We do not have enough of this item in stock at this time. Please try again later.");
+                start();
             }
         });
     });
@@ -123,11 +146,14 @@ function displayItems() {
             );
         }
 
-        console.log(table.toString());
-        // connection.end();
+        console.log("\n" + table.toString());
+        start();
     });
 };
 
 
-
-
+/* Exit node customer.js (Function) */
+function exitCustomer() {
+    console.log("Exited successfully.")
+    connection.end();
+}

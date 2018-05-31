@@ -43,12 +43,3 @@ VALUES
 
 
 SELECT * FROM bamazon_db.products LIMIT 1000;
-
-
-SELECT DISTINCT (departments.dep_name), departments.dep_id, departments.overhead_costs
-FROM departments INNER JOIN products ON departments.dep_name = products.department_name;
-   
-
-
-//, products.product_sales
-//departments.overhead_costs
