@@ -76,38 +76,39 @@ function viewSales() {
 };
 
 
+
 /* Create New Department (Function) */
 function createDepartment() {
     // Prompt for info about name and overhead costs of new department
     inquirer.prompt([
-    {
-        name: "new-department",
-        type: input,
-        message: "What is the name of the department you would like to add?"
-    },
-    {
-        name: "overhead-costs",
-        type: "input",
-        message: "What are the overhead costs for this department?",
-        validate: function(value) {
-            if (isNaN(value) === false) {
+        {
+            name: "newDepartment",
+            type: "input",
+            message: "What department would you like to add?"
+        },
+        {
+            name: "newCosts",
+            type: "input",
+            message: "What are the overhead costs for this department?",
+            validate: function(value) {
+                if (isNaN(value) === false) {
                 return true;
+                }
+                return false;
             }
-            return false;
         }
-    }
     ])
     .then(function(answer) {
         // Insert user input into SQL departments table
         connection.query(
             "INSERT INTO bamazon_db.departments SET ?",
             {
-                dep_name: answer.new-department,
-                overhead_costs: answer.overhead-costs,
+                dep_name: answer.newDepartment,
+                overhead_costs: answer.newCosts,
             },
             function(err) {
                 if (err) throw err;
-                console.log("\n" + answer.new-department + " was added as a department \n");
+                console.log("\n" + answer.newDepartment + " was added as a department \n");
                 start();
             }
         )
