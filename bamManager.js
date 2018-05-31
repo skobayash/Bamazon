@@ -11,22 +11,23 @@ var connection = mysql.createConnection({
     database: "bamazon_db"
 });
   
-  // connect to the mysql server and sql database
+// Connect to the MySQL server & SQL database
 connection.connect(function(err) {
     if (err) throw err;
     start();
 });
 
 
+/* Start (Function) */
 function start() {
-    inquirer
-      .prompt({
+    // Prompt Main Menu List
+    inquirer.prompt({
         name: "action",
         type: "rawlist",
         message: "What would you like to do?",
         choices: ["View products for sale", "View low inventory", "Add to inventory", "Add new product", "Exit"]
-      })
-      .then(function(answer) {
+    })
+    .then(function(answer) {
 
         switch (answer.action) {
             case "View products for sale":
@@ -46,28 +47,31 @@ function start() {
                 break;
         }
 
-      });
-  }
+    });
+}
 
 
+/* View Products (Function) */
 function viewProducts() {
     connection.query(
         "SELECT * FROM bamazon_db.products", 
         function(err, results) 
         {
+            // Table variable
             var table = new Table({
                 head: ['Item ID', 'Product Name', 'Price ($)', 'Quantity']
             });
-         
+
+            // For each result, push info into table
             for (var i = 0; i < results.length; i++) {
                 table.push(
                     [results[i].item_id, results[i].product_name, results[i].price, results[i].quantity]
                 );
             }
 
+            // Log table in terminal
             console.log("\n" + table.toString() + "\n");
    
-
             if (err) throw err;
             start();
 
@@ -76,13 +80,16 @@ function viewProducts() {
 };
 
 
+
+/* Display Low Inventory (Function) */
 function lowInventory() {
     connection.query("SELECT * FROM bamazon_db.products", function(err, results) {        
        
         var table = new Table({
             head: ['Item ID', 'Product Name', 'Quantity']
         });
-         
+        
+        // For each result, push info into table if stock quantity is under 5
         for (var i = 0; i < results.length; i++) {
             if (results[i].quantity < 5) {
                 table.push(
@@ -93,21 +100,20 @@ function lowInventory() {
 
         console.log("\n" + table.toString() + "\n");
         if (err) throw err;
+
         start();
-    
     });
 }
 
 
 
-
+/* Add Inventory (Function) */
 function addInventory() {
 
     connection.query("SELECT * FROM bamazon_db.products", function(err, results) {
         if (err) throw err;
-        // once you have the items, prompt the user for which they'd like to bid on
-        inquirer
-          .prompt([
+
+        inquirer.prompt([
             {
                 name: "addItem",
                 type: "input",
@@ -132,14 +138,18 @@ function addInventory() {
             }
         ])
         .then(function(answer) {
-            // get the information of the chosen item
+            
+            // Local variable to store results info
             var chosenItem;
+
+            // Loop through results until they match the user input
             for (var i = 0; i < results.length; i++) {
-              if (results[i].item_id == answer.addItem) {
-                chosenItem = results[i];
-              }
+                if (results[i].item_id == answer.addItem) {
+                    chosenItem = results[i];
+                }
             }
 
+            // Local variable to store updated stock quantity
             var newQuantity = parseInt(chosenItem.quantity) + parseInt(answer.addUnits)
             
             connection.query(
@@ -161,12 +171,11 @@ function addInventory() {
 }
 
 
-//(product_name, department_name, price, quantity
 
+/* Add New Product (Function) */
 function newProduct() {
     // prompt for info about the item being put up for auction
-    inquirer
-      .prompt([
+    inquirer.prompt([
         {
             name: "newItem",
             type: "input",
@@ -199,9 +208,9 @@ function newProduct() {
                 return false;
             }
         }
-      ])
-      .then(function(answer) {
-        // when finished prompting, insert a new item into the db with that info
+    ])
+    .then(function(answer) {
+        // Insert new info into products table
         connection.query(
           "INSERT INTO bamazon_db.products SET ?",
           {
@@ -220,6 +229,7 @@ function newProduct() {
 }
 
     
+/* Exit (Function) */
 function exitManager() {
     console.log("Exited successfully.")
     connection.end();

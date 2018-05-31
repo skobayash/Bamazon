@@ -12,7 +12,7 @@ var connection = mysql.createConnection({
     database: "bamazon_db"
 });
   
-  // connect to the mysql server and sql database
+// Connect to MySQL server & SQL database
 connection.connect(function(err) {
     if (err) throw err;
     displayItems()
@@ -20,14 +20,12 @@ connection.connect(function(err) {
 });
 
 
-
+/* Prompt User About Purchase (Function)*/
 function userPrompt() {
-
+    // Main menu list prompt
     connection.query("SELECT * FROM bamazon_db.products", function(err, results) {
         if (err) throw err;
-        // once you have the items, prompt the user for which they'd like to bid on
-        inquirer
-          .prompt([
+        inquirer.prompt([
             {
                 name: "itemID",
                 type: "input",
@@ -52,19 +50,23 @@ function userPrompt() {
             }
         ])
         .then(function(answer) {
-            // get the information of the chosen item
+            // Local variable for storing results
             var chosenItem;
+
+            // Loop through results until they match the user input
             for (var i = 0; i < results.length; i++) {
-              if (results[i].item_id == answer.itemID) {
-                chosenItem = results[i];
-              }
+                if (results[i].item_id == answer.itemID) {
+                    chosenItem = results[i];
+                }
             }
+
+            // Local variables to store sale and updated stock quantity info
             var newQuantity = chosenItem.quantity - answer.numUnits
             var totalSale = (parseInt(answer.numUnits) * chosenItem.price)
 
-            // determine if there is enough of the item in stock
+            // Determine if there is enough of the item in stock
             if (chosenItem.quantity >= parseInt(answer.numUnits)) {
-                // bid was high enough, so update db, let the user know, and start over
+                // Update stock quantity
                 connection.query(
                     "UPDATE bamazon_db.products SET ? WHERE ?",
                     [
@@ -81,15 +83,16 @@ function userPrompt() {
                         console.log("Your total purchase is $" + totalSale + ".");
                     },
                 );
+                // Update total sales amount
                 connection.query(
                     "UPDATE bamazon_db.products SET ? WHERE ?",
                     [
-                      {
-                        product_sales: chosenItem.product_sales + totalSale
-                      },
-                      {
-                        item_id: chosenItem.item_id
-                      }
+                        {
+                            product_sales: chosenItem.product_sales + totalSale
+                        },
+                        {
+                            item_id: chosenItem.item_id
+                        }
                     ],
                     function(error) {
                         if (error) throw err;
@@ -104,12 +107,8 @@ function userPrompt() {
     });
 }
     
-
-
-
-
   
-
+/* Display Store Items (Function) */
 function displayItems() {
     connection.query("SELECT * FROM bamazon_db.products", function(err, results) {
         if (err) throw err;
@@ -128,5 +127,7 @@ function displayItems() {
         // connection.end();
     });
 };
+
+
 
 

@@ -11,40 +11,40 @@ var connection = mysql.createConnection({
     database: "bamazon_db"
 });
   
-  // connect to the mysql server and sql database
+// Connect to MySQL server & SQL database
 connection.connect(function(err) {
     if (err) throw err;
     start();
 });
 
 
+/* Start (Function) */
 function start() {
-    inquirer
-      .prompt({
+    // Main menu prompt list
+    inquirer.prompt({
         name: "action",
         type: "rawlist",
         message: "What would you like to do?",
         choices: ["View product sales by department", "Create new department", "Exit"]
-      })
-      .then(function(answer) {
+    })
+    .then(function(answer) {
 
         switch (answer.action) {
             case "View product sales by department":
                 viewSales();
                 break;
             case "Create new department":
-                // createDepartment();
+                createDepartment();
                 break;
             case "Exit":
-                // exitSupervisor();
+                exitSupervisor();
                 break;
         }
 
     });
 }
 
-// dep_id || dep_name || overhead_costs || product_sales || total_profit
-
+/* View Sales (Function) */
 function viewSales() {
 
     var table = new Table({
@@ -63,8 +63,7 @@ function viewSales() {
 
     connection.query(query, function(err, results) {
         if (err) throw err;
-        
-         
+        // push information into CLI table and log table to terminal 
         for (var i = 0; i < results.length; i++) {
             table.push(
                 [results[i].dep_id, results[i].dep_name, results[i].overhead_costs, results[i].product_sales]
@@ -77,6 +76,48 @@ function viewSales() {
 };
 
 
+/* Create New Department (Function) */
+function createDepartment() {
+    // Prompt for info about name and overhead costs of new department
+    inquirer.prompt([
+    {
+        name: "new-department",
+        type: input,
+        message: "What is the name of the department you would like to add?"
+    },
+    {
+        name: "overhead-costs",
+        type: "input",
+        message: "What are the overhead costs for this department?",
+        validate: function(value) {
+            if (isNaN(value) === false) {
+                return true;
+            }
+            return false;
+        }
+    }
+    ])
+    .then(function(answer) {
+        // Insert user input into SQL departments table
+        connection.query(
+            "INSERT INTO bamazon_db.departments SET ?",
+            {
+                dep_name: answer.new-department,
+                overhead_costs: answer.overhead-costs,
+            },
+            function(err) {
+                if (err) throw err;
+                console.log("\n" + answer.new-department + " was added as a department \n");
+                start();
+            }
+        )
+    });
+}
+
+
+
+
+/* Exit node supervisor.js (Function) */
 function exitSupervisor() {
     console.log("Exited successfully.")
     connection.end();
