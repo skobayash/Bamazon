@@ -48,7 +48,7 @@ function start() {
 function viewSales() {
 
     var table = new Table({
-        head: ['Department ID', 'Department Name', 'Overhead Costs', 'Product Sales']
+        head: ['Department ID', 'Department Name', 'Overhead Costs($)', 'Product Sales($)', 'Total Profit($)']
     });
 
 
@@ -67,10 +67,10 @@ function viewSales() {
                 [results[i].dep_id, results[i].dep_name, results[i].overhead_costs, results[i].product_sales, results[i].total_profit]
             );
         }
-        console.log(table.toString());
+        console.log("\n" + table.toString() + "\n");
+        start();
     });
 
-    connection.end();
 };
 
 
